@@ -1,106 +1,174 @@
-// import { Switch } from "@mui/material";
-
+import { Box, Paper, Typography } from "@mui/material";
 import { useCRSForm } from "../../../context/CRSFormContext";
-import SectionHeader from "../components/SectionHeader";
-import YesNoField from "../components/YesNoField";
 import DateField from "../components/DateField";
-import ToggleSwitch from "../components/ToggleSwitch";
 import FieldError from "../components/FieldError";
+import ToggleSwitch from "../components/ToggleSwitch";
+
+const cardSx = {
+  p: { xs: 2, sm: 2.5 },
+  border: "1px solid #cfd4de",
+  borderRadius: "12px",
+  bgcolor: "#fff",
+  boxShadow: "none",
+  minWidth: 0,
+} as const;
 
 export default function CaseVaccinationHistorySection() {
   const { formData, validationErrors, updateCaseVaccinationHistory } =
     useCRSForm();
 
   const vaccinationHistory = formData.caseVaccinationHistory;
-
   const vaccinationErrors = validationErrors.caseVaccinationHistory;
 
-  const handleAvailabilityChange = (checked: boolean) => {
-    updateCaseVaccinationHistory({
-      ...vaccinationHistory,
+  const updateHistory = (changes: Partial<typeof vaccinationHistory>) =>
+    updateCaseVaccinationHistory({ ...vaccinationHistory, ...changes });
 
+  const handleAvailabilityChange = (checked: boolean) =>
+    updateHistory({
       vaccinationHistoryAvailable: checked,
-
-      vaccinatedAgainstRubella: checked
-        ? vaccinationHistory.vaccinatedAgainstRubella
-        : null,
-
-      rubellaVaccinationDate: checked
-        ? vaccinationHistory.rubellaVaccinationDate
-        : "",
+      ...(!checked && {
+        vaccinatedAgainstRubella: null,
+        rubellaVaccinationDate: "",
+      }),
     });
-  };
 
-  const handleVaccinatedChange = (value: "yes" | "no" | null) => {
-    updateCaseVaccinationHistory({
-      ...vaccinationHistory,
-
-      vaccinatedAgainstRubella: value,
-
-      rubellaVaccinationDate:
-        value === "yes" ? vaccinationHistory.rubellaVaccinationDate : "",
+  const handleVaccinatedChange = (checked: boolean) =>
+    updateHistory({
+      vaccinatedAgainstRubella: checked ? "yes" : "no",
+      ...(!checked && { rubellaVaccinationDate: "" }),
     });
-  };
 
   return (
-    <section>
-      <SectionHeader
-        image="/vaccine.png"
-        title="Vaccination History of the Case"
-        // subtitle="Record rubella vaccination information"
-        rightContent={
-          <div className="flex items-center gap-3 rounded-xl bg-[#dbeafe] px-4 py-2">
-            <span className="text-sm font-medium text-[#111827]">
-              Vaccination history available?
-            </span>
+    <Box
+      component="section"
+      sx={{
+        bgcolor: "#fff",
+        border: "1px solid #cfd4de",
+        "& .MuiFormLabel-asterisk": { display: "none" },
+      }}
+    >
+      {/* HEADER WITH AVAILABILITY TOGGLE */}
+      <Box
+        component="header"
+        sx={{
+          px: { xs: 2, md: 3 },
+          py: 2.5,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 2,
+          borderBottom: "1px solid #cfd4de",
+        }}
+      >
+        <Typography
+          component="h2"
+          sx={{
+            fontSize: { xs: 20, md: 24 },
+            fontWeight: 700,
+            color: "#0f172a",
+          }}
+        >
+          Vaccination History of the Case
+        </Typography>
 
-            <ToggleSwitch
-              checked={vaccinationHistory.vaccinationHistoryAvailable}
-              onChange={handleAvailabilityChange}
-              ariaLabel="Enable vaccination history"
-            />
-          </div>
-        }
-      />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1.5,
+            border: "1px solid #cfd4de",
+            p: "6px 12px",
+          }}
+        >
+          <Typography
+            component="span"
+            sx={{
+              fontSize: 14,
+              fontWeight: 500,
+              color: "#2c3b4b",
+            }}
+          >
+            Vaccination history available?
+          </Typography>
 
-      <div className="px-5 py-3">
-        {vaccinationHistory.vaccinationHistoryAvailable && (
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-4">
-            {/* Vaccinated against rubella */}
-            <div className="shrink-0">
-              <YesNoField
-                name="caseVaccinatedAgainstRubella"
-                label="Vaccinated against rubella"
-                value={vaccinationHistory.vaccinatedAgainstRubella}
-                onChange={handleVaccinatedChange}
-                required
-                inline
-              />
-            </div>
+          <ToggleSwitch
+            checked={vaccinationHistory.vaccinationHistoryAvailable}
+            onChange={handleAvailabilityChange}
+            ariaLabel="Enable vaccination history"
+          />
+        </Box>
+      </Box>
 
-            {/* Vaccination Date */}
-            {vaccinationHistory.vaccinatedAgainstRubella === "yes" && (
-              <div className="w-full pt-1 md:w-60">
-                <DateField
-                  label="Vaccination Date"
-                  value={vaccinationHistory.rubellaVaccinationDate}
-                  required
-                  onChange={(value) =>
-                    updateCaseVaccinationHistory({
-                      ...vaccinationHistory,
-                      rubellaVaccinationDate: value,
-                    })
+      {/* VACCINATION DETAILS */}
+      {vaccinationHistory.vaccinationHistoryAvailable && (
+        <Box sx={{ p: { xs: 2, md: 3 } }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 0.5fr)",
+              gap: 2,
+              "@media (min-width:1024px)": {
+                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              },
+            }}
+          >
+            <Paper component="article" variant="outlined" sx={cardSx}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  gap: 1.5,
+                }}
+              >
+                <Typography
+                  component="h3"
+                  sx={{
+                    fontSize: 16,
+                    fontWeight: 600,
+                    color: "#0f172a",
+                  }}
+                >
+                  Vaccinated against rubella
+                </Typography>
+
+                <ToggleSwitch
+                  checked={
+                    vaccinationHistory.vaccinatedAgainstRubella === "yes"
                   }
+                  onChange={handleVaccinatedChange}
+                  ariaLabel="Vaccinated against rubella"
                 />
+              </Box>
 
-                <FieldError
-                  message={vaccinationErrors.rubellaVaccinationDate}
-                />
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </section>
+              {vaccinationHistory.vaccinatedAgainstRubella === "yes" && (
+                <Box
+                  sx={{
+                    mt: 2,
+                    pt: 2,
+                    borderTop: "1px solid #d8dde6",
+                  }}
+                >
+                  <DateField
+                    label="Vaccination Date"
+                    value={vaccinationHistory.rubellaVaccinationDate}
+                    required
+                    onChange={(value) =>
+                      updateHistory({ rubellaVaccinationDate: value })
+                    }
+                  />
+
+                  <FieldError
+                    message={vaccinationErrors.rubellaVaccinationDate}
+                  />
+                </Box>
+              )}
+            </Paper>
+          </Box>
+        </Box>
+      )}
+    </Box>
   );
 }

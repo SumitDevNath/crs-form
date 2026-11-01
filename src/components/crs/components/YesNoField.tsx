@@ -1,5 +1,9 @@
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-
+import {
+  Box,
+  Typography,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@mui/material";
 import type { YesNo } from "../types/crs.types";
 
 interface YesNoFieldProps {
@@ -26,25 +30,56 @@ export default function YesNoField({
   inline = false,
 }: YesNoFieldProps) {
   return (
-    <div
-      className={`flex items-center ${
-        inline ? "justify-start ml-10 gap-10" : "justify-between gap-4"
-      } ${compact ? "min-h-10" : "min-h-12"}`}
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: inline ? "flex-start" : "space-between",
+        gap: inline ? 5 : 2,
+        ml: inline ? 5 : 0,
+        minHeight: compact ? 40 : 48,
+      }}
     >
       {(label || number !== undefined) && (
-        <div className="flex min-w-0 items-center gap-2">
+        <Box
+          sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}
+        >
           {number !== undefined && (
-            <span className="text-sm text-[#566575]">{number}.</span>
+            <Typography
+              component="span"
+              sx={{
+                fontSize: 14,
+                lineHeight: "20px",
+                fontFamily: "inherit",
+                letterSpacing: "inherit",
+                color: "#566575",
+              }}
+            >
+              {number}.
+            </Typography>
           )}
 
           {label && (
-            <span className="text-sm font-medium text-[#1f2937]">
+            <Typography
+              component="span"
+              sx={{
+                fontSize: 14,
+                lineHeight: "20px",
+                fontWeight: 500,
+                fontFamily: "inherit",
+                letterSpacing: "inherit",
+                color: "#1f2937",
+              }}
+            >
               {label}
-
-              {required && <span className="ml-1 text-red-600">*</span>}
-            </span>
+              {required && (
+                <Box component="span" sx={{ ml: 0.5, color: "#dc2626" }}>
+                  *
+                </Box>
+              )}
+            </Typography>
           )}
-        </div>
+        </Box>
       )}
 
       <ToggleButtonGroup
@@ -53,10 +88,8 @@ export default function YesNoField({
         value={value}
         disabled={disabled}
         aria-label={label || name}
-        onChange={(_, nextValue: YesNo) => {
-          if (nextValue) {
-            onChange(nextValue);
-          }
+        onChange={(_, nextValue: YesNo | null) => {
+          if (nextValue) onChange(nextValue);
         }}
         sx={{
           flexShrink: 0,
@@ -73,35 +106,26 @@ export default function YesNoField({
             fontSize: "0.8rem",
             fontWeight: 500,
             color: "#9ca3af",
-            backgroundColor: "#f3f4f6",
-          },
+            bgcolor: "#f3f4f6",
 
-          // Unselected button: no hover effect
-          "& .MuiToggleButton-root:hover": {
-            color: "#9ca3af",
-            backgroundColor: "#f3f4f6",
-            borderColor: "#d7dce3",
-          },
+            "&:hover": {
+              color: "#9ca3af",
+              bgcolor: "#f3f4f6",
+              borderColor: "#d7dce3",
+            },
 
-          "& .MuiToggleButton-root.Mui-selected": {
-            backgroundColor: "#0b63c7",
-            color: "#ffffff",
-            borderColor: "#0b63c7",
-            fontWeight: 600,
-          },
-
-          // Selected button: also keep same appearance on hover
-          "& .MuiToggleButton-root.Mui-selected:hover": {
-            backgroundColor: "#0b63c7",
-            color: "#ffffff",
-            borderColor: "#0b63c7",
+            "&.Mui-selected, &.Mui-selected:hover": {
+              bgcolor: "#0b63c7",
+              color: "#ffffff",
+              borderColor: "#0b63c7",
+              fontWeight: 600,
+            },
           },
         }}
       >
         <ToggleButton value="yes">Yes</ToggleButton>
-
         <ToggleButton value="no">No</ToggleButton>
       </ToggleButtonGroup>
-    </div>
+    </Box>
   );
 }

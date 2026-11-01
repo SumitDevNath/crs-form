@@ -1,3 +1,4 @@
+import { Box, Typography } from "@mui/material";
 import type { ReactNode } from "react";
 
 interface SectionHeaderProps {
@@ -16,35 +17,103 @@ export default function SectionHeader({
   rightContent,
 }: SectionHeaderProps) {
   return (
-    <div className="flex flex-col gap-3 bg-white px-0 pt-0 pb-2 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex items-center">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md">
-          <img
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 1.5,
+        bgcolor: "#fff",
+        pb: 1,
+        "@media (min-width:640px)": {
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        },
+      }}
+    >
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 32,
+            height: 32,
+            flexShrink: 0,
+            borderRadius: "6px",
+          }}
+        >
+          <Box
+            component="img"
             src={image}
             alt=""
             aria-hidden="true"
-            className="h-6 w-6 object-contain"
+            sx={{ width: 24, height: 24, objectFit: "contain" }}
           />
-        </div>
+        </Box>
 
-        <div>
-          <h2 className="text-[18px] font-bold text-[#0f172a]">{title}</h2>
+        <Box>
+          <Typography
+            component="h2"
+            variant="inherit"
+            sx={{
+              m: 0,
+              fontSize: 18,
+              lineHeight: 1.5,
+              fontWeight: 700,
+              color: "#0f172a",
+            }}
+          >
+            {title}
+          </Typography>
 
           {subtitle && (
-            <p className="mt-1 text-sm text-[#566575]">{subtitle}</p>
+            <Typography
+              component="p"
+              variant="inherit"
+              sx={{
+                mt: 0.5,
+                mb: 0,
+                fontSize: 14,
+                lineHeight: "20px",
+                color: "#566575",
+              }}
+            >
+              {subtitle}
+            </Typography>
           )}
-        </div>
-      </div>
+        </Box>
+      </Box>
 
-      <div className="flex flex-wrap items-center gap-3">
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: 1.5,
+        }}
+      >
         {mandatory && (
-          <div className="rounded-full bg-[#fdecec] px-4 py-2 text-xs font-medium text-[#c62828]">
+          <Typography
+            component="div"
+            variant="inherit"
+            sx={{
+              borderRadius: "9999px",
+              bgcolor: "#fdecec",
+              px: 2,
+              py: 1,
+              fontSize: 12,
+              lineHeight: "16px",
+              fontWeight: 500,
+              color: "#c62828",
+            }}
+          >
             * Mandatory field
-          </div>
+          </Typography>
         )}
 
         {rightContent}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

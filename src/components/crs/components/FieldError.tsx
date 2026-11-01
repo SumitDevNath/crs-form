@@ -1,15 +1,25 @@
+import { Typography } from "@mui/material";
+
 interface FieldErrorProps {
   message?: string;
 }
 
 export default function FieldError({ message }: FieldErrorProps) {
-  if (!message) {
-    return null;
-  }
+  if (!message) return null;
 
   return (
-    <div className="pt-1">
-      <p className="text-xs leading-4 text-[#d32f2f]">{message}</p>
-    </div>
+    <Typography
+      component="p"
+      variant="inherit"
+      sx={{
+        m: 0,
+        pt: "4px",
+        fontSize: "0.75rem",
+        lineHeight: "1rem",
+        color: "#d32f2f",
+      }}
+    >
+      {message}
+    </Typography>
   );
 }

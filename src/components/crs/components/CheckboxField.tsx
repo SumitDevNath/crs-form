@@ -15,11 +15,10 @@ export default function CheckboxField({
 }: CheckboxFieldProps) {
   return (
     <FormControlLabel
+      label={label}
       sx={{
-        marginLeft: 0,
-        marginRight: 0,
+        m: 0,
         alignItems: "center",
-
         "& .MuiFormControlLabel-label": {
           fontSize: "0.8125rem",
           color: "#2c3b4b",
@@ -30,19 +29,15 @@ export default function CheckboxField({
           size="small"
           checked={checked}
           disabled={disabled}
-          onChange={(event) => onChange(event.target.checked)}
+          onChange={(_, checked) => onChange(checked)}
           sx={{
-            padding: "5px",
-            marginRight: "4px",
+            p: "5px",
+            mr: "4px",
             color: "#94a3b8",
-
-            "&.Mui-checked": {
-              color: "#12608f",
-            },
+            "&.Mui-checked": { color: "#12608f" },
           }}
         />
       }
-      label={label}
     />
   );
 }

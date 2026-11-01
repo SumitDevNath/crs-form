@@ -1,58 +1,40 @@
 import { useRef } from "react";
-import { IconButton, InputAdornment, TextField } from "@mui/material";
+import { Box, TextField, IconButton, InputAdornment } from "@mui/material";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 
 interface DateFieldProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
-
   disabled?: boolean;
   required?: boolean;
-
   error?: boolean;
   helperText?: string;
 }
 
 function getTodayNativeDate(): string {
   const today = new Date();
+  const pad = (value: number) => String(value).padStart(2, "0");
 
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
+  return `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
 }
 
 function convertNativeDateToDisplay(value: string): string {
-  if (!value) {
-    return "";
-  }
+  if (!value) return "";
 
   const [year, month, day] = value.split("-");
-
-  if (!year || !month || !day) {
-    return "";
-  }
-
-  return `${day}-${month}-${year}`;
+  return year && month && day ? `${day}-${month}-${year}` : "";
 }
 
 function isFutureDisplayDate(value: string): boolean {
   const match = /^(\d{2})-(\d{2})-(\d{4})$/.exec(value);
-
   if (!match) return false;
 
-  const day = Number(match[1]);
-  const month = Number(match[2]);
-  const year = Number(match[3]);
-
-  const enteredDate = new Date(year, month - 1, day);
-
+  const [, day, month, year] = match;
+  const enteredDate = new Date(+year, +month - 1, +day);
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  enteredDate.setHours(0, 0, 0, 0);
 
+  today.setHours(0, 0, 0, 0);
   return enteredDate > today;
 }
 
@@ -60,25 +42,15 @@ export default function DateField({
   label,
   value,
   onChange,
-
   disabled = false,
   required = false,
-
-  // error = false,
-  // helperText,
 }: DateFieldProps) {
-  const calendarInputRef = useRef<HTMLInputElement | null>(null);
+  const calendarInputRef = useRef<HTMLInputElement>(null);
 
   const handleCalendarClick = () => {
-    if (disabled) {
-      return;
-    }
+    if (disabled || !calendarInputRef.current) return;
 
     const input = calendarInputRef.current;
-
-    if (!input) {
-      return;
-    }
 
     try {
       input.showPicker();
@@ -87,32 +59,8 @@ export default function DateField({
     }
   };
 
-  const handleCalendarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedDate = event.target.value;
-
-    onChange(convertNativeDateToDisplay(selectedDate));
-  };
-
-  const handleManualChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const enteredValue = event.target.value;
-
-    // Allow only numbers and hyphen.
-    const sanitizedValue = enteredValue.replace(/[^0-9-]/g, "");
-
-    // DD-MM-YYYY = maximum 10 characters.
-    onChange(sanitizedValue.slice(0, 10));
-  };
-
-  const todayNativeDate = getTodayNativeDate();
-
-  const handleBlur = () => {
-    if (isFutureDisplayDate(value)) {
-      onChange("");
-    }
-  };
-
   return (
-    <div className="relative">
+    <Box sx={{ position: "relative" }}>
       <TextField
         fullWidth
         size="small"
@@ -120,14 +68,16 @@ export default function DateField({
         value={value}
         disabled={disabled}
         required={required}
-        // error={error}
-        // helperText={helperText}
         placeholder="DD-MM-YYYY"
-        onChange={handleManualChange}
-        onBlur={handleBlur}
+        onChange={(event) =>
+          onChange(event.target.value.replace(/[^0-9-]/g, "").slice(0, 10))
+        }
+        onBlur={() => {
+          if (isFutureDisplayDate(value)) onChange("");
+        }}
         sx={{
           "& .MuiOutlinedInput-root": {
-            backgroundColor: "#ffffff",
+            bgcolor: "#fff",
           },
         }}
         slotProps={{
@@ -136,7 +86,6 @@ export default function DateField({
             inputMode: "numeric",
             "aria-label": `${label} in DD-MM-YYYY format`,
           },
-
           input: {
             endAdornment: (
               <InputAdornment position="end">
@@ -156,15 +105,24 @@ export default function DateField({
         }}
       />
 
-      <input
+      <Box
+        component="input"
         ref={calendarInputRef}
         type="date"
-        max={todayNativeDate}
-        onChange={handleCalendarChange}
+        max={getTodayNativeDate()}
+        onChange={(event) =>
+          onChange(convertNativeDateToDisplay(event.target.value))
+        }
         tabIndex={-1}
         aria-hidden="true"
-        className="pointer-events-none absolute h-0 w-0 opacity-0"
+        sx={{
+          position: "absolute",
+          width: 0,
+          height: 0,
+          opacity: 0,
+          pointerEvents: "none",
+        }}
       />
-    </div>
+    </Box>
   );
 }

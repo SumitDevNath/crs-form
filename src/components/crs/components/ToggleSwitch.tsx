@@ -1,3 +1,5 @@
+import { Switch } from "@mui/material";
+
 interface ToggleSwitchProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
@@ -12,46 +14,59 @@ export default function ToggleSwitch({
   disabled = false,
 }: ToggleSwitchProps) {
   return (
-    <label className="relative inline-flex shrink-0 cursor-pointer items-center">
-      <input
-        type="checkbox"
-        className="peer sr-only"
-        checked={checked}
-        disabled={disabled}
-        aria-label={ariaLabel}
-        onChange={(event) => onChange(event.target.checked)}
-      />
+    <Switch
+      checked={checked}
+      onChange={(_, value) => onChange(value)}
+      disabled={disabled}
+      disableRipple
+      slotProps={{ input: { "aria-label": ariaLabel } }}
+      sx={{
+        width: 44,
+        height: 24,
+        p: 0,
+        flexShrink: 0,
+        opacity: disabled ? 0.5 : 1,
 
-      <div
-        className="
-          relative
-          h-6 w-11
-          rounded-full
-          bg-[#c5cad4]
-          transition-colors
+        "& .MuiSwitch-switchBase": {
+          p: "2px",
 
-          after:absolute
-          after:left-2px
-          after:top-1/2
-          after:h-5
-          after:w-5
-          after:-translate-y-1/2
-          after:rounded-full
-          after:bg-white
-          after:shadow-sm
-          after:transition-transform
-          after:content-['']
+          "&.Mui-checked": {
+            transform: "translateX(20px)",
+            color: "#fff",
 
-          peer-checked:bg-[#0566c7]
-          peer-checked:after:translate-x-full
+            "& + .MuiSwitch-track": {
+              bgcolor: "#0566c7",
+              opacity: 1,
+            },
+          },
 
-          peer-focus-visible:ring-2
-          peer-focus-visible:ring-[#0566c7]/30
+          "&.Mui-focusVisible + .MuiSwitch-track": {
+            boxShadow: "0 0 0 2px rgba(5, 102, 199, 0.3)",
+          },
 
-          peer-disabled:cursor-not-allowed
-          peer-disabled:opacity-50
-        "
-      />
-    </label>
+          "&.Mui-disabled": {
+            cursor: "not-allowed",
+          },
+
+          "&.Mui-disabled + .MuiSwitch-track": {
+            opacity: 1,
+          },
+        },
+
+        "& .MuiSwitch-thumb": {
+          width: 20,
+          height: 20,
+          bgcolor: "#fff",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+        },
+
+        "& .MuiSwitch-track": {
+          borderRadius: 12,
+          bgcolor: "#c5cad4",
+          opacity: 1,
+          transition: "background-color 150ms ease",
+        },
+      }}
+    />
   );
 }
