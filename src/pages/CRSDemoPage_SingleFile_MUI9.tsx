@@ -635,7 +635,7 @@ export function CheckboxField({
 
 // DateField (inlined from DateField(3).tsx)
 interface DateFieldProps {
-  label: string;
+  label?: string;
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
@@ -1745,160 +1745,171 @@ function ClinicalInformationSection() {
           </SectionCard>
         </Box>
 
-        <SectionCard clinical title="Birth Details">
-          <Box
-            sx={{
-              display: "grid",
-              gap: 2.5,
-              "@media (min-width:768px)": {
-                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-              },
-            }}
-          >
-            <Paper
-              component="article"
-              variant="outlined"
-              data-crs-invalid={
-                submitAttempted && submissionErrors["birthDetails.birthWeight"]
-                  ? "true"
-                  : undefined
-              }
-              tabIndex={-1}
-              sx={[
-                clinicalCardSx,
-                ...(submitAttempted &&
-                submissionErrors["birthDetails.birthWeight"]
-                  ? [invalidCardSx]
-                  : []),
-              ]}
+        <Box sx={{ maxWidth: "740px", width: "100%" }}>
+          <SectionCard clinical title="Birth Details">
+            <Box
+              sx={{
+                display: "grid",
+                gap: 2.5,
+                maxWidth: "700px",
+                alignItems: "start",
+                width: "100%",
+                gridTemplateColumns: "minmax(0, 1fr)",
+                "@media (min-width:768px)": {
+                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                },
+              }}
             >
-              <Typography sx={{ ...cardTitleSx, mb: 2 }}>
-                Birth Weight
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  flexWrap: "wrap",
-                  gap: 1,
-                }}
-              >
-                <Box
-                  sx={{
-                    width: 150,
-                    "& .MuiFormLabel-asterisk": { display: "none" },
-                  }}
-                >
-                  <TextField
-                    required
-                    size="small"
-                    type="number"
-                    label="Birth Weight"
-                    value={birthDetails.birthWeight}
-                    error={Boolean(birthErrors.birthWeight)}
-                    onChange={(event) =>
-                      updateSection("birthDetails", {
-                        birthWeight: event.target.value,
-                      })
-                    }
-                    sx={{
-                      width: 150,
-                      "& .MuiOutlinedInput-root": { bgcolor: "#fff" },
-                    }}
-                  />
-                  <FieldError message={birthErrors.birthWeight} />
-                </Box>
-                <ToggleButtonGroup
-                  exclusive
-                  size="small"
-                  value={birthDetails.birthWeightUnit}
-                  aria-label="Birth weight unit"
-                  onChange={(_, nextValue: "kg" | "lb" | null) => {
-                    if (nextValue === "kg" || nextValue === "lb") {
-                      updateSection("birthDetails", {
-                        birthWeightUnit: nextValue,
-                      });
-                    }
-                  }}
-                  sx={[choiceSx, { "& .MuiToggleButton-root": { height: 40 } }]}
-                >
-                  <ToggleButton value="kg">KG</ToggleButton>
-                  <ToggleButton value="lb">LB</ToggleButton>
-                </ToggleButtonGroup>
-              </Box>
-            </Paper>
-
-            <Paper
-              component="article"
-              variant="outlined"
-              data-crs-invalid={
-                submitAttempted && submissionErrors["birthDetails.isChildDead"]
-                  ? "true"
-                  : undefined
-              }
-              tabIndex={-1}
-              sx={[
-                clinicalCardSx,
-                ...(submitAttempted &&
-                submissionErrors["birthDetails.isChildDead"]
-                  ? [invalidCardSx]
-                  : []),
-              ]}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: 2,
-                }}
-              >
-                <Typography sx={cardTitleSx}>Is the child dead?</Typography>
-                <ToggleSwitch
-                  checked={birthDetails.isChildDead === "yes"}
-                  onChange={handleChildStatusChange}
-                  ariaLabel="Is the child dead?"
-                />
-              </Box>
-              <FieldError
-                message={
-                  submitAttempted
-                    ? submissionErrors["birthDetails.isChildDead"]
+              <Paper
+                component="article"
+                variant="outlined"
+                data-crs-invalid={
+                  submitAttempted &&
+                  submissionErrors["birthDetails.birthWeight"]
+                    ? "true"
                     : undefined
                 }
-              />
-              {birthDetails.isChildDead === "yes" && (
+                tabIndex={-1}
+                sx={[
+                  clinicalCardSx,
+                  ...(submitAttempted &&
+                  submissionErrors["birthDetails.birthWeight"]
+                    ? [invalidCardSx]
+                    : []),
+                ]}
+              >
+                <Typography sx={{ ...cardTitleSx, mb: 2 }}>
+                  Birth Weight
+                </Typography>
                 <Box
-                  data-crs-invalid={
-                    submitAttempted &&
-                    submissionErrors["birthDetails.dateOfDeath"]
-                      ? "true"
-                      : undefined
-                  }
-                  tabIndex={-1}
                   sx={{
-                    ...conditionalSx,
-                    "& .MuiFormLabel-asterisk": { display: "none" },
+                    display: "flex",
+                    alignItems: "flex-start",
+                    flexWrap: "wrap",
+                    gap: 1,
                   }}
                 >
-                  <DateField
-                    label="Date of Death"
-                    value={birthDetails.dateOfDeath}
-                    error={
-                      submitAttempted &&
-                      Boolean(submissionErrors["birthDetails.dateOfDeath"])
-                    }
-                    required
-                    onChange={(value) =>
-                      updateSection("birthDetails", { dateOfDeath: value })
-                    }
-                  />
-                  <FieldError message={birthErrors.dateOfDeath} />
+                  <Box
+                    sx={{
+                      width: 150,
+                      "& .MuiFormLabel-asterisk": { display: "none" },
+                    }}
+                  >
+                    <TextField
+                      required
+                      size="small"
+                      type="number"
+                      // label="Birth Weight"
+                      value={birthDetails.birthWeight}
+                      error={Boolean(birthErrors.birthWeight)}
+                      onChange={(event) =>
+                        updateSection("birthDetails", {
+                          birthWeight: event.target.value,
+                        })
+                      }
+                      sx={{
+                        width: 150,
+                        "& .MuiOutlinedInput-root": { bgcolor: "#fff" },
+                      }}
+                    />
+                    <FieldError message={birthErrors.birthWeight} />
+                  </Box>
+                  <ToggleButtonGroup
+                    exclusive
+                    size="small"
+                    value={birthDetails.birthWeightUnit}
+                    aria-label="Birth weight unit"
+                    onChange={(_, nextValue: "kg" | "lb" | null) => {
+                      if (nextValue === "kg" || nextValue === "lb") {
+                        updateSection("birthDetails", {
+                          birthWeightUnit: nextValue,
+                        });
+                      }
+                    }}
+                    sx={[
+                      choiceSx,
+                      { "& .MuiToggleButton-root": { height: 40 } },
+                    ]}
+                  >
+                    <ToggleButton value="kg">KG</ToggleButton>
+                    <ToggleButton value="lb">LB</ToggleButton>
+                  </ToggleButtonGroup>
                 </Box>
-              )}
-            </Paper>
-          </Box>
-        </SectionCard>
+              </Paper>
+
+              <Paper
+                component="article"
+                variant="outlined"
+                data-crs-invalid={
+                  submitAttempted &&
+                  submissionErrors["birthDetails.isChildDead"]
+                    ? "true"
+                    : undefined
+                }
+                tabIndex={-1}
+                sx={[
+                  clinicalCardSx,
+                  ...(submitAttempted &&
+                  submissionErrors["birthDetails.isChildDead"]
+                    ? [invalidCardSx]
+                    : []),
+                ]}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 2,
+                  }}
+                >
+                  <Typography sx={cardTitleSx}>Is the child dead?</Typography>
+                  <ToggleSwitch
+                    checked={birthDetails.isChildDead === "yes"}
+                    onChange={handleChildStatusChange}
+                    ariaLabel="Is the child dead?"
+                  />
+                </Box>
+                <FieldError
+                  message={
+                    submitAttempted
+                      ? submissionErrors["birthDetails.isChildDead"]
+                      : undefined
+                  }
+                />
+                {birthDetails.isChildDead === "yes" && (
+                  <Box
+                    data-crs-invalid={
+                      submitAttempted &&
+                      submissionErrors["birthDetails.dateOfDeath"]
+                        ? "true"
+                        : undefined
+                    }
+                    tabIndex={-1}
+                    sx={{
+                      ...conditionalSx,
+                      "& .MuiFormLabel-asterisk": { display: "none" },
+                    }}
+                  >
+                    <DateField
+                      // label="Date of Death"
+                      value={birthDetails.dateOfDeath}
+                      error={
+                        submitAttempted &&
+                        Boolean(submissionErrors["birthDetails.dateOfDeath"])
+                      }
+                      required
+                      onChange={(value) =>
+                        updateSection("birthDetails", { dateOfDeath: value })
+                      }
+                    />
+                    <FieldError message={birthErrors.dateOfDeath} />
+                  </Box>
+                )}
+              </Paper>
+            </Box>
+          </SectionCard>
+        </Box>
       </Box>
     </Box>
   );
@@ -2020,7 +2031,7 @@ function MaternalHistorySection() {
         <Typography
           component="h2"
           sx={{
-            fontSize: { xs: 20, md: 24 },
+            fontSize: { xs: 16, md: 20 },
             fontWeight: 700,
             color: "#0f172a",
           }}
@@ -2065,7 +2076,7 @@ function MaternalHistorySection() {
                   fullWidth
                   size="small"
                   type="number"
-                  label={field.label}
+                  // label={field.label}
                   value={basicInformation[field.key]}
                   error={Boolean(basicErrors[field.key])}
                   helperText={basicErrors[field.key]}
@@ -2316,7 +2327,7 @@ function CaseVaccinationHistorySection() {
         <Typography
           component="h2"
           sx={{
-            fontSize: { xs: 20, md: 24 },
+            fontSize: { xs: 16, md: 20 },
             fontWeight: 700,
             color: "#0f172a",
           }}
@@ -2377,6 +2388,12 @@ function CaseVaccinationHistorySection() {
               tabIndex={-1}
               sx={[
                 vaccinationCardSx,
+                {
+                  width: "100%",
+                  maxWidth: 360, // Controls the card width
+                  p: 1.5, // Controls inner padding
+                  borderRadius: "8px",
+                },
                 ...(submitAttempted &&
                 submissionErrors["caseVaccination.vaccinatedAgainstRubella"]
                   ? [invalidCardSx]
@@ -2429,7 +2446,7 @@ function CaseVaccinationHistorySection() {
                   }}
                 >
                   <DateField
-                    label="Vaccination Date"
+                    // label="Vaccination Date"
                     value={vaccinationHistory.rubellaVaccinationDate}
                     error={
                       submitAttempted &&
@@ -2467,7 +2484,7 @@ const sections = [
 
 const formSectionSx = {
   border: "1px solid #dbe3ec",
-  borderRadius: "12px",
+  borderRadius: "1px",
   bgcolor: "#fff",
   p: "20px",
   boxShadow: "none",
@@ -2498,7 +2515,7 @@ function CRSInvestigationForm() {
   return (
     <Stack
       ref={formRef}
-      spacing={2}
+      spacing={0}
       sx={{ p: "12px", "@media (min-width:640px)": { p: "16px" } }}
     >
       {sections.map(({ id, Component }) => (
@@ -2511,7 +2528,7 @@ function CRSInvestigationForm() {
           <Component />
         </Paper>
       ))}
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2.5 }}>
         <Button
           variant="contained"
           type="button"
@@ -2520,6 +2537,7 @@ function CRSInvestigationForm() {
             bgcolor: "#0b63c7",
             color: "#fff",
             fontWeight: 600,
+            borderRadius: "6px",
             textTransform: "none",
             px: 3,
             py: 1.25,
